@@ -2,7 +2,11 @@
 
 Spatial frequency performance was quantified using slanted-edge analysis of high-contrast edge images acquired under identical imaging settings across all conditions. The edge target was oriented obliquely relative to the detector sampling grid to enable sub-pixel phase diversity. To reduce bias from camera-internal processing, analysis used raw images or linear 16-bit renders from raw data whenever available.
 
+ALYコメント：今回、MTF50を検出している目的は、機材そのものの性能を評価するためではなく、透明化処理を施した組織の透明度を評価するためです。つまり、通常通りhigh-contrast targetを撮影した場合と、ターゲット上に透明化した組織を置いた場合とを比較したときMTFがどれだけ低下するか、また処理方法の異なる組織塊ごとにどの方法が優勢であるかをある程度の定量性を以て評価することに用いています。
+
 For each image, a rectangular region of interest (ROI) containing the edge transition and local background was selected after excluding saturated pixels. The edge location and orientation were estimated within the ROI, and each pixel center was projected onto the axis normal to the fitted edge. Pixel intensities were then re-indexed by signed edge-normal distance to construct an oversampled edge spread function (ESF) at sub-pixel spacing. Here, \(d\) denotes signed distance along the edge-normal axis and \(f\) denotes spatial frequency.
+
+ALYコメント：撮影装置は、Thorlabs LP126CU/MとTTL100-A, Mitutoyo M Plan Apo 2xを組み立てて作った1倍顕微鏡を用いています。顕微鏡というよりmacroscopeと呼ぶべきかもしれませんが、適当な用語を当てて下さい。Saturationを避けるようにexposure timeは調整していますが、少なくとも、比較すべきサンプル間では一定にしています。
 
 ## Core equations
 
@@ -15,6 +19,8 @@ L(d) &= \frac{\mathrm{d}E(d)}{\mathrm{d}d}, \\
 \operatorname{MTF}(f) &= \frac{\left| \mathcal{F}\{L(d)\}(f) \right|}{\left| \mathcal{F}\{L(d)\}(0) \right|}.
 \end{aligned}
 $$
+
+ALYコメント：なぜ上記のような変換（ESF→微分によるLSF算出→フーリエ変換によるMTF算出）が可能なのか、数学的機序についても簡潔に説明してください。
 
 To mitigate truncation artifacts and suppress high-frequency noise, the LSF was multiplied by an apodization window before Fourier transformation. MTF50 was defined as the spatial frequency \(f_{50}\) satisfying
 
