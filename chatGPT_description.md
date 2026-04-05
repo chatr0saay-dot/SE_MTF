@@ -1,20 +1,47 @@
-Below is a manuscript-style English version that is **tool-agnostic** and written in a form that could be adapted for a *Nature Methods*-style Methods section.
+# Slanted-edge MTF50 measurement (core methods text)
 
-**Slanted-edge analysis and derivation of MTF50**
+Spatial frequency performance was quantified using slanted-edge analysis of high-contrast edge images acquired under identical imaging settings across all conditions. The edge target was oriented obliquely relative to the detector sampling grid to enable sub-pixel phase diversity. To reduce bias from camera-internal processing, analysis used raw images or linear 16-bit renders from raw data whenever available.
 
-Spatial frequency response was quantified from slanted-edge images. A high-contrast straight edge, oriented obliquely with respect to the detector pixel matrix, was imaged under identical acquisition settings for all conditions. Raw images, or linearly rendered 16-bit images derived from raw data, were used wherever possible in order to minimise the influence of in-camera sharpening, denoising and non-linear tone mapping. For each measurement, a rectangular region of interest encompassing the edge and adjacent background was selected, and saturated regions were excluded from analysis. The edge was modelled within the region of interest, and the position of each pixel centre was projected onto the axis normal to the fitted edge. This yielded a set of intensity samples as a function of signed distance from the edge, from which an oversampled edge spread function (ESF) was reconstructed at sub-pixel spacing. The use of a slanted edge permits sampling of the edge transition at multiple phases relative to the pixel grid and thereby enables phase-averaged estimation of the spatial frequency response. ([ISO][1])
+For each image, a rectangular region of interest (ROI) containing the edge transition and local background was selected after excluding saturated pixels. The edge location and orientation were estimated within the ROI, and each pixel center was projected onto the axis normal to the fitted edge. Pixel intensities were then re-indexed by signed edge-normal distance to construct an oversampled edge spread function (ESF) at sub-pixel spacing. Here, \(d\) denotes signed distance along the edge-normal axis and \(f\) denotes spatial frequency.
 
-The oversampled ESF, (E(d)), was differentiated with respect to the edge-normal coordinate (d) to obtain the line spread function (LSF), (L(d)=dE(d)/dd). The LSF was multiplied by an apodisation window prior to Fourier transformation in order to reduce edge-truncation artefacts and suppress high-frequency noise. The modulus of the discrete Fourier transform of the windowed LSF was then calculated and normalised by its zero-frequency component to obtain the modulation transfer function, (MTF(f)=|F(f)|/|F(0)|), where (f) denotes spatial frequency. In digital imaging systems, this quantity is more precisely regarded as the edge-based spatial frequency response; however, for consistency with common practice, the derived frequency metric is referred to here as MTF50. MTF50 was defined as the spatial frequency at which the normalised MTF reached 0.5 and was estimated by interpolation between adjacent sampled frequencies. ([ResearchSpace][2])
+## Core equations
 
-For conversion from detector units to physical units, spatial frequency was first expressed in cycles per pixel and, where required, converted to line pairs per millimetre in the image plane using the detector pixel pitch (p), such that (\mathrm{lp/mm}=f/p). When object-space resolution was required, image-plane frequency was scaled by the system magnification (M), yielding ((\mathrm{lp/mm})_{\mathrm{object}}=fM/p). Unless otherwise stated, comparisons were performed using identical edge targets, acquisition settings, preprocessing conditions and analysis parameters across all samples. ([ResearchSpace][2])
+The edge spread function, line spread function, and modulation transfer function were defined as
 
-If you want something even closer to journal prose, you could use this slightly tighter version:
+$$
+\begin{aligned}
+E(d) &= \text{edge spread function}, \\
+L(d) &= \frac{\mathrm{d}E(d)}{\mathrm{d}d}, \\
+\operatorname{MTF}(f) &= \frac{\left| \mathcal{F}\{L(d)\}(f) \right|}{\left| \mathcal{F}\{L(d)\}(0) \right|}.
+\end{aligned}
+$$
 
-**MTF50 measurement by slanted-edge analysis**
+To mitigate truncation artifacts and suppress high-frequency noise, the LSF was multiplied by an apodization window before Fourier transformation. MTF50 was defined as the spatial frequency \(f_{50}\) satisfying
 
-MTF50 was determined from slanted-edge images acquired from a high-contrast oblique edge target. Raw or linearly rendered 16-bit images were analysed to minimise bias from non-linear image processing. Within each region of interest, the edge was fitted and each pixel intensity was reassigned according to its signed perpendicular distance from the fitted edge, allowing reconstruction of an oversampled edge spread function (ESF). The ESF was differentiated to generate the line spread function (LSF), windowed, and Fourier-transformed. The magnitude of the resulting spectrum was normalised to the zero-frequency component to yield the modulation transfer function (MTF). MTF50 was defined as the spatial frequency at which the normalised MTF decreased to 0.5 and was obtained by interpolation between neighbouring frequency samples. Frequencies were reported in cycles per pixel and converted to line pairs per millimetre where required. ([ISO][1])
+$$
+\operatorname{MTF}(f_{50}) = 0.5,
+$$
 
-I can also tailor this to a **microscopy-specific Methods paragraph** with wording for knife-edge imaging, objective magnification, pixel size, and raw ORF/TIFF handling.
+with \(f_{50}\) estimated by interpolation between adjacent sampled frequency bins.
 
-[1]: https://www.iso.org/obp/ui/?utm_source=chatgpt.com "ISO 12233:2017(en), Photography — Electronic still picture ..."
-[2]: https://researchspace.csir.co.za/server/api/core/bitstreams/427a959c-1b48-4468-b92b-5982a9dbe9b1/content?utm_source=chatgpt.com "Robust edge spread function construction methods to counter ..."
+Frequencies were first reported in cycles per pixel. Where required, values were converted to image-plane and object-plane line pairs per millimeter (lp/mm) as
+
+$$
+\begin{aligned}
+f_{\mathrm{image}}^{(\mathrm{lp/mm})} &= \frac{f_{\mathrm{pixel}}^{(\mathrm{cy/pixel})}}{p}, \\
+f_{\mathrm{object}}^{(\mathrm{lp/mm})} &= \frac{M\,f_{\mathrm{pixel}}^{(\mathrm{cy/pixel})}}{p},
+\end{aligned}
+$$
+
+where \(p\) is the detector pixel pitch in mm/pixel and \(M\) is the system magnification.
+Unless otherwise stated, all comparisons used matched edge targets, acquisition settings, preprocessing conditions, and analysis parameters.
+
+## Notes for manuscript adaptation
+
+- In sampled digital systems, this edge-derived metric is often termed spatial frequency response (SFR); here, the conventional term MTF50 is used for consistency with common reporting practice.
+- For biomedical manuscripts, explicitly report edge angle, ROI size, window type, interpolation scheme, and whether demosaicing/sharpening was disabled.
+
+## References
+
+1. ISO 12233:2017. *Photography — Electronic still picture imaging — Resolution and spatial frequency responses.* International Organization for Standardization.
+2. van den Bergh F. et al. *Robust edge spread function construction methods to counter the effects of correlated noise.* (edge-based MTF/SFR methodology).
